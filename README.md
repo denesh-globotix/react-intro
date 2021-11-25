@@ -1,3 +1,10 @@
+# Installing this application
+## Clone the repostiory 
+```git clone git@github.com:denesh-globotix/react-intro.git```
+
+## Install the dependencies
+```npm install``` 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
