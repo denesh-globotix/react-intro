@@ -7,21 +7,33 @@ const { useEffect, useState } = React;
 
 function App() {
   const [counter, setCounter] = useState(0);
-  const [userInfo, setuserInfo] = useState([]);
+  const [userInfo, setuserInfo] = useState([{name: {first: "hello", last: "bye"}, picture: {thumnail: "no"}}]);
+  const [nextPageNumber, setnextPageNumber] = useState(1);
   const [randomUserData, setrandomUserData] = useState('');
+
+  const fetchNextData = () => {
+    fetchRandomData(nextPageNumber).then((randomData) => {
+      setrandomUserData(JSON.stringify(randomData, null, 2) || "no data");
+      const newUserInfos = [
+        ...userInfo,
+        ...randomData.results
+      ]
+      console.log(newUserInfos)
+      setuserInfo(randomData.results);
+      setnextPageNumber(randomData.info.page + 1);
+    })  
+  } 
 
   // mimics componentdidmount 
   useEffect(() => {
-    fetchRandomData()
+    fetchRandomData(nextPageNumber)
       .then((randomData) => {
         setrandomUserData(JSON.stringify(randomData) || 'no user data');
         setuserInfo(randomData.results)
-        console.log(randomData.results[0])
-        console.log(randomData.results[0].name)
-        console.log(userInfo[0].name.first)
+        setnextPageNumber(randomData.info.page + 1)
       });
   }, [])
-
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -30,23 +42,22 @@ function App() {
         <Button colorScheme="green" onClick={() => {
           setCounter(counter + 1)
         }}>Increment</Button>
-          {JSON.stringify(getFullUserName(userInfo[0]))}
-        {/* <pre>{randomUserData}</pre> */}
-        <img src={userInfo[0].picture.large}/>
+        <Button colorScheme="blue" onClick={() => {
+          fetchRandomData()
+        }}>Add User</Button>
+        {JSON.stringify(getFullUserName(userInfo[0]))}
+        <img src={userInfo[0].picture.thumbnail} />
       </header>
     </div>
   );
 }
 
 const getFullUserName = (userInfo) => {
-  console.log(userInfo)
-  const {name} = userInfo;
-  const {first, last} = name;
-  return `${name.first} ${name.last}`;
+  return `${userInfo.name.first} ${userInfo.name.last}`;
 }
 
-const fetchRandomData = async () => {
-  return axios.get('https://randomuser.me/api')
+const fetchRandomData = async (PageNumber) => {
+  return axios.get(`https://randomuser.me/api?page=${PageNumber}`)
     .then(({ data }) => {
       return (data);
     })
