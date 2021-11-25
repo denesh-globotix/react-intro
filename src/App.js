@@ -1,5 +1,7 @@
-import React from "react"
+import * as React from "react"
 import './App.css';
+import {Button, ButtonGroup} from '@chakra-ui/react'
+
 
 const {useState} = React;
 
@@ -10,9 +12,9 @@ function App() {
       <header className="App-header">
           <h1>Learn React</h1>
           <p>{counter}</p>
-          <button onClick={() => {
+          <Button colorScheme="green" onClick={() => {
             setCounter(counter+1)
-          }}>Increment</button>
+          }}>Increment</Button>
       </header>
     </div>
   );
